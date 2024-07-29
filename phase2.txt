@@ -1,0 +1,18 @@
+Exercices SQL :
+
+Lot 1 :
+1. SELECT hot_nom, hot_ville from hotel;
+2. select cli_nom,cli_prenom,cli_adresse,cli_ville from client where client.cli_nom="White";
+3. select sta_nom, sta_altitude from station where sta_altitude<1000;
+4. SELECT cha_numero,cha_capacite FROM chambre WHERE cha_capacite>1;
+5. SELECT cli_nom, cli_ville from client where cli_ville!="Londre";
+6. select hot_nom, hot_ville, hot_categorie from hotel where hot_categorie>3 and hot_ville="Bretou";
+
+Lot 2 :
+
+7. SELECT sta_nom, hot_nom , hot_categorie, hot_ville from hotel join station where hotel.hot_sta_id=station.sta_id;
+8. SELECT hot_nom , hot_categorie , hot_ville , cha_numero from hotel join chambre where hotel.hot_id=chambre.cha_hot_id;
+9. SELECT hot_nom , hot_categorie , hot_ville , cha_numero from hotel join chambre where hotel.hot_id=chambre.cha_hot_id and hot_ville="Bretou"  and chambre.cha_capacite>1;
+10.
+
+

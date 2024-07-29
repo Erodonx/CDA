@@ -1,0 +1,56 @@
+1. select * from entcom where numfou = 09120;
+2. select numfou from entcom;
+3. select count(*) as "nombre de commande fournisseur", count(distinct numfou) as "nombre de fournisseur" from entcom;;
+4. SELECT codart, libart, stkphy, stkale, qteann
+   FROM produit 
+   WHERE stkphy <= stkale AND qteann < 1000;
+5. SELECT 
+    CASE
+        WHEN LEFT(posfou, 2) = '75' THEN '75'
+        WHEN LEFT(posfou, 2) = '78' THEN '78'
+        WHEN LEFT(posfou, 2) = '92' THEN '92'
+        WHEN LEFT(posfou, 2) = '77' THEN '77'
+    END AS posfou,
+    nomfou
+FROM 
+    fournis
+WHERE 
+    LEFT(posfou, 2) IN ('75', '78', '92', '77')
+ORDER BY 
+    posfou DESC, 
+    nomfou ASC;
+6. select * from entcom where substring(datcom,6,2) in ('03','04');
+   select * from entcom where MONTH(datcom) in ('03','04');
+7. select numcom,datcom from entcom where obscom!='';
+8. SELECT  numcom, sum(qtecde*priuni) as TOTAL
+FROM ligcom 
+GROUP BY numcom
+ORDER BY TOTAL DESC;
+9. SELECT numcom, sum(qtecde*priuni) as TOTAL
+FROM ligcom 
+WHERE qtecde <= 1000
+GROUP BY numcom
+HAVING TOTAL >10000
+ORDER BY TOTAL DESC;
+10. SELECT nomfou, ligcom.numcom, datcom 
+FROM entcom
+JOIN ligcom ON ligcom.numcom = entcom.numcom
+JOIN fournis ON fournis.numfou = entcom.numfou;
+
+
+11. SELECT produit.libart from produit 
+JOIN ligcom on produit.codart=ligcom.codart
+JOIN entcom ON entcom.numcom=ligcom.numcom
+WHERE entcom.obscom LIKE "%urgent%";
+
+12. 
+
+SELECT DISTINCT nomfou
+FROM fournis
+JOIN entcom ON fournis.numfou = entcom.numfou
+JOIN ligcom ON ligcom.numcom = entcom.numcom
+
+WHERE entcom.numfou IS NOT NULL;
+
+Select nomfou from fournis where numfou in (select numfou from entcom where numcom in (SELECT numcom from ligcom));
+
