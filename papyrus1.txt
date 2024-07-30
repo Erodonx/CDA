@@ -54,3 +54,67 @@ WHERE entcom.numfou IS NOT NULL;
 
 Select nomfou from fournis where numfou in (select numfou from entcom where numcom in (SELECT numcom from ligcom));
 
+13. SELECT numcom, datcom from entcom
+WHERE numfou = (SELECT numfou FROM entcom WHERE numcom = 70210);
+
+SELECT numcom, datcom from entcom WHERE
+numfou LIKE (SELECT numfou from entcom where numcom = 70210);
+
+14.
+
+SELECT DISTINCT prix1, libart FROM produit 
+JOIN vente
+ON vente.codart = produit.codart 
+WHERE prix1 < (SELECT prix1 FROM vente
+               JOIN produit ON vente.codart = produit.codart
+               WHERE  libart LIKE 'r%'
+               having min(libart LIKE 'r%'));
+15.
+
+SELECT libart,nomfou FROM produit
+JOIN vente ON vente.codart=produit.codart
+JOIN fournis ON vente.numfou=vente.numfou
+where stkphy<=(stkale*1.5)
+
+ORDER BY libart,nomfou;
+
+16.
+SELECT nomfou, libart
+FROM fournis
+JOIN entcom  ON entcom.numfou = fournis.numfou
+JOIN ligcom  ON ligcom.numcom = entcom.numcom
+JOIN produit ON produit.codart = ligcom.codart
+WHERE stkphy <= (1.50 * stkale) 
+AND DATEDIFF(ligcom.derliv, entcom.datcom) <= 30
+ORDER BY nomfou ASC, libart ASC; 
+
+17.
+SELECT f.nomfou, p.libart, l.qtecde
+FROM fournis f
+JOIN entcom e ON e.numfou = f.numfou
+JOIN ligcom l ON l.numcom = e.numcom
+JOIN produit p ON p.codart = l.codart
+WHERE p.stkphy <= (1.50 * p.stkale) 
+AND DATEDIFF(l.derliv, e.datcom) <= 30
+GROUP BY f.nomfou
+ORDER BY MAX(l.qtecde) DESC;
+
+18. 
+SELECT nomfou,libart FROM fournis
+JOIN entcom on entcom.numfou=fournis.numfou
+JOIN ligcom on ligcom.numcom=entcom.numcom
+JOIN produit on produit.codart=ligcom.codart
+WHERE qtecde > 0.9*qteann;
+
+19.
+SELECT nomfou, SUM(qte1*prix1+qte2*prix2+qte3*prix3)*1.2 as "Chiffre d'affaire total"
+FROM fournis
+JOIN entcom on entcom.numfou=fournis.numfou
+JOIN ligcom on ligcom.numcom=entcom.numcom
+JOIN produit on produit.codart=ligcom.codart
+JOIN vente on produit.codart=vente.codart
+GROUP BY nomfou;
+
+20.
+
+aucune livraison concernant produit ayant le codart D050 n'a été livré par un seul fournisseur.
