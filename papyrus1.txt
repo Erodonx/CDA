@@ -116,6 +116,5 @@ JOIN vente on produit.codart=vente.codart
 GROUP BY nomfou;
 
 20.
-
 aucune livraison concernant produit ayant le codart D050 n'a été livré par un seul fournisseur.//
 GROBRIGAN livre du papier et sur une commande il a livrer des CD R. ? A revoir gros point ????.
