@@ -1,0 +1,20 @@
+1.
+create view v_hotel_station
+AS
+SELECT * from hotel
+JOIN station ON station.sta_id=hotel.hot_sta_id
+
+2.
+create view v_chambre_hotel
+AS
+SELECT * from chambre
+JOIN hotel ON chambre.cha_hot_id=hotel.hot_id;
+
+3.
+CREATE VIEW v_reservation_client
+AS
+SELECT res_id,cli_nom,res_cha_id,res_cli_id,res_date,res_date_debut,res_date_fin,res_prix,res_arrhes FROM
+reservation
+JOIN client ON client.cli_id=reservation.res_cli_id;
+
+4.
