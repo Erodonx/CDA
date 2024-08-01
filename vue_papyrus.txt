@@ -1,0 +1,19 @@
+1.
+CREATE VIEW v_Global_Cde
+AS
+SELECT codart, sum(qtecde) AS "QteTot" , sum(qtecde*priuni) AS "PrixTot"
+FROM ligcom
+GROUP BY codart;
+
+
+2.
+CREATE VIEW v_VentesI100
+AS
+SELECT * FROM vente
+WHERE codart="I100";
+
+3.
+CREATE VIEW v_ventesI100Grobrigan
+AS
+SELECT * from v_VentesI100
+WHERE numfou="120";
