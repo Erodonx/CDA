@@ -1,0 +1,104 @@
+Exercice 1 :
+- 
+DELIMITER |
+
+CREATE PROCEDURE Lst_fournis()
+BEGIN
+    SELECT numfou FROM entcom;
+END |
+
+DELIMITER ;
+
+- Via PHPMYADMIN
+
+- SHOW CREATE PROCEDURE Lst_fournis;
+
+
+Exercice 2 :
+
+11. SELECT produit.libart from produit 
+JOIN ligcom on produit.codart=ligcom.codart
+JOIN entcom ON entcom.numcom=ligcom.numcom
+WHERE entcom.obscom LIKE "%urgent%";
+
+-
+
+DELIMITER |
+
+CREATE PROCEDURE Lst_Commandes_enonce()
+BEGIN
+    SELECT * FROM entcom
+    WHERE entcom.obscom LIKE "%urgent%";
+END |
+
+DELIMITER;
+
+
+DELIMITER |
+
+CREATE PROCEDURE Lst_Commandes()
+BEGIN
+    SELECT libart FROM produit
+    JOIN ligcom ON produit.codart=ligcom.codart
+    JOIN entcom ON entcom.numcom=ligcom.numcom
+    WHERE entcom.obscom LIKE "%urgent%";
+END |
+
+DELIMITER;
+
+
+DELIMITER |
+
+CREATE PROCEDURE Lst_Commandes_param(In observation Varchar(50))
+BEGIN
+    SELECT libart FROM produit
+    JOIN ligcom ON produit.codart=ligcom.codart
+    JOIN entcom ON entcom.numcom=ligcom.numcom
+    WHERE entcom.obscom LIKE observation;
+END |
+
+DELIMITER;
+
+Exercice 3.
+
+SELECT nomfou, SUM(qte1*prix1+qte2*prix2+qte3*prix3)*1.2 as "Chiffre d'affaire total"
+FROM fournis
+JOIN entcom on entcom.numfou=fournis.numfou
+JOIN ligcom on ligcom.numcom=entcom.numcom
+JOIN produit on produit.codart=ligcom.codart
+JOIN vente on produit.codart=vente.codart
+GROUP BY nomfou;
+
+
+
+DELIMITER |
+
+CREATE PROCEDURE CA_fournisseur(
+    In numfournis int,
+    In annee YEAR
+)
+BEGIN
+    DECLARE existe INT;
+
+    SELECT COUNT(*) INTO existe FROM fournis WHERE numfou = numfournis;
+
+    IF existe = 0 THEN
+        SIGNAL SQLSTATE '40000'
+        SET MESSAGE_TEXT ="Le numéro de fournisseur spécifié n'existe pas.";
+    ELSE
+
+    SELECT nomfou, SUM(qte1*prix1+qte2*prix2+qte3*prix3)*1.2 as "Chiffre d'affaire total"
+    FROM fournis
+    JOIN entcom on entcom.numfou=fournis.numfou
+    JOIN ligcom on ligcom.numcom=entcom.numcom
+    JOIN produit on produit.codart=ligcom.codart
+    JOIN vente on produit.codart=vente.codart
+    WHERE nomfou=numfournis AND YEAR(datcom)=annee;
+    END IF;
+END |
+
+DELIMITER;
+
+
+
+
