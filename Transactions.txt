@@ -1,0 +1,30 @@
+Que concluez vous ?
+
+Les modifications ont été effectuées même sans le commit???
+CA BEUGUE.
+
+Ligne par ligne ça execute sans prendre en compte les lignes précèdentes il semblerait.
+
+
+Executée d'un coup la requête ne marche pas.
+
+Il manquait des ';',
+
+Executée d'une traite avec les ';' elle fonctionne.
+
+
+Les données sont-elles modifiables par d'autres....?
+
+OUI ouvrir une nouvelle requête avec une nouvelle fenêtre me permet de modifier les informations.
+
+La transaction est-elle terminée?
+
+Non il manque le commit.
+
+Comment rendre la modification permanente?
+
+Rajouter une ligne COMMIT;
+
+Comment annuler la transaction ?
+
+Rajouter une ligne ROLLBACK;

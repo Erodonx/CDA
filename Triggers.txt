@@ -1,0 +1,42 @@
+Exercices .
+
+1. 
+
+DELIMITER |
+CREATE TRIGGER modif_reservation AFTER UPDATE ON modif_reservation
+    BEGIN
+        SIGNAL SQLSTATE '40000' SET MESSAGE_TEXT = 'Impossible de modifier les réservations !'
+    END
+|
+DELIMITER;
+
+2.
+DELIMITER |
+CREATE TRIGGER insert_reservation AFTER INSERT ON reservation
+	FOR EACH ROW
+    BEGIN
+    	IF (SELECT count(res_cha_id) from reservation
+	   JOIN chambre ON reservation.res_cha_id=chambre.cha_id
+	   JOIN hotel ON hotel.hot_id=chambre.cha_hot_id
+	   GROUP BY hotel.hot_id)>10
+    		THEN SIGNAL SQLSTATE '40000' SET MESSAGE_TEXT = 'Il y a déjà 10 réservation dans cet hotel, on ne peut pas en rajouter.';
+  		END IF;
+    END;
+|
+DELIMITER;
+
+3.
+DELIMITER |
+CREATE TRIGGER insert_reservation2 AFTER INSERT ON reservation
+	FOR EACH ROW
+    BEGIN
+    	IF (SELECT count(res_cli_id) from reservation
+	   JOIN client ON reservation.res_cli_id=client.cli_id
+	   GROUP BY client.cli_id)>3
+    		THEN SIGNAL SQLSTATE '40000' SET MESSAGE_TEXT = 'Il y a déjà 3 reservation pour ce client.';
+  		END IF;
+    END;
+|
+DELIMITER;
+
+INSERT INTO reservation (res_id,res_cha_id,res_cli_id,res_date,res_date_debut,res_date_fin,res_prix) values (10,'5','1','2017-01-10 00:00:00','2017-01-11 00:00:00','2017-01-12 00:00:00','2500');
