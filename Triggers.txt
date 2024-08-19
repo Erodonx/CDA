@@ -30,9 +30,11 @@ DELIMITER |
 CREATE TRIGGER insert_reservation2 AFTER INSERT ON reservation
 	FOR EACH ROW
     BEGIN
-    	IF (SELECT count(res_cli_id) from reservation
+    DECLARE numclient INT;
+    SET numclient=NEW.res_cli_id;
+       IF (SELECT count(res_cli_id) from reservation
 	   JOIN client ON reservation.res_cli_id=client.cli_id
-	   GROUP BY client.cli_id)>3
+	   WHERE reservation.res_cli_id=numclient)>3
     		THEN SIGNAL SQLSTATE '40000' SET MESSAGE_TEXT = 'Il y a déjà 3 reservation pour ce client.';
   		END IF;
     END;
