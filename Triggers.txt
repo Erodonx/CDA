@@ -23,7 +23,7 @@ CREATE TRIGGER insert_reservation AFTER INSERT ON reservation
   		END IF;
     END;
 |
-DELIMITER;
+DELIMITER ;
 
 3.
 DELIMITER |
@@ -39,6 +39,129 @@ CREATE TRIGGER insert_reservation2 AFTER INSERT ON reservation
   		END IF;
     END;
 |
-DELIMITER;
+DELIMITER ;
 
 INSERT INTO reservation (res_id,res_cha_id,res_cli_id,res_date,res_date_debut,res_date_fin,res_prix) values (10,'5','1','2017-01-10 00:00:00','2017-01-11 00:00:00','2017-01-12 00:00:00','2500');
+
+4.
+DELIMITER |
+CREATE TRIGGER insert_chambre AFTER INSERT ON chambre
+	FOR EACH ROW
+    BEGIN
+    DECLARE capacite INT;
+    SET capacite=NEW.cha_hot_id;
+       IF (SELECT sum(cha_capacite) from chambre
+	   JOIN hotel ON chambre.cha_hot_id=hotel.hot_id
+	   WHERE hotel.hot_id=capacite)>50
+    		THEN SIGNAL SQLSTATE '40000' SET MESSAGE_TEXT = "L'hôtel n'a pas le droit d'héberger plus de 50 personnes.";
+  		END IF;
+    END;
+|
+DELIMITER ;
+
+
+
+CAS PRATIQUE
+
+
+1. ->
+
+
+
+
+
+2.
+
+DELIMITER |
+CREATE TRIGGER maj_total AFTER INSERT ON lignedecommande
+    FOR EACH ROW
+    BEGIN
+    DECLARE id_c INT;
+    DECLARE tot DOUBLE;
+    SET id_c = NEW.id_commande; -- nous captons le numéro de commande concerné
+    SET tot = (SELECT sum(prix*quantite) FROM lignedecommande WHERE id_commande=id_c); -- on recalcule le total
+    -- SET tot = ????  (prévoir le calcul de la remise) 
+    UPDATE commande SET total=tot WHERE id=id_c; -- on stocke le total dans la table commande
+    END;
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE TRIGGER maj_total1 AFTER UPDATE ON lignedecommande
+    FOR EACH ROW
+    BEGIN
+    DECLARE id_c INT;
+    DECLARE tot DOUBLE;
+    SET id_c = NEW.id_commande; -- nous captons le numéro de commande concerné
+    SET tot = (SELECT sum(prix*quantite) FROM lignedecommande WHERE id_commande=id_c); -- on recalcule le total
+        -- SET tot = ??? (prévoir le calcul de la remise) 
+    UPDATE commande SET total=tot WHERE id=id_c; -- on stocke le total dans la table commande
+    END;
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE TRIGGER maj_total2 AFTER DELETE ON lignedecommande
+    FOR EACH ROW
+    BEGIN
+    DECLARE id_c INT;
+    DECLARE tot DOUBLE;
+    SET id_c = OLD.id_commande; -- nous captons le numéro de commande concerné
+    SET tot = (SELECT sum(prix*quantite) FROM lignedecommande WHERE id_commande=id_c); -- on recalcule le total
+    -- SET tot = ???? (prévoir le calcul de la remise) 
+    UPDATE commande SET total=tot WHERE id=id_c; -- on stocke le total dans la table commande
+    END;
+|
+DELIMITER ;
+
+
+3.
+DELIMITER |
+CREATE TRIGGER maj_total AFTER INSERT ON lignedecommande
+    FOR EACH ROW
+    BEGIN
+    DECLARE id_c INT;
+    DECLARE tot DOUBLE;
+	DECLARE coeff DOUBLE;
+    SET id_c = NEW.id_commande; -- nous captons le numéro de commande concerné
+    SET tot = (SELECT sum(prix*quantite) FROM lignedecommande WHERE id_commande=id_c); -- on recalcule le total
+	SET coeff = (SELECT remise from commande where id=id_c)/100; -- on vient chercher la remise
+    SET tot = tot*coeff; -- (prévoir le calcul de la remise) 
+    UPDATE commande SET total=tot WHERE id=id_c; -- on stocke le total dans la table commande
+    END;
+|
+DELIMITER ;
+
+DELIMITER |
+CREATE TRIGGER maj_total AFTER UPDATE ON lignedecommande
+    FOR EACH ROW
+    BEGIN
+    DECLARE id_c INT;
+    DECLARE tot DOUBLE;
+	DECLARE coeff DOUBLE;
+    SET id_c = NEW.id_commande; -- nous captons le numéro de commande concerné
+    SET tot = (SELECT sum(prix*quantite) FROM lignedecommande WHERE id_commande=id_c); -- on recalcule le total
+	SET coeff = (SELECT remise from commande where id=id_c)/100; -- on vient chercher la remise
+    SET tot = tot*coeff; -- (prévoir le calcul de la remise) 
+    UPDATE commande SET total=tot WHERE id=id_c; -- on stocke le total dans la table commande
+    END;
+|
+DELIMITER ;
+
+
+
+DELIMITER |
+CREATE TRIGGER maj_total2 AFTER DELETE ON lignedecommande
+    FOR EACH ROW
+    BEGIN
+    DECLARE id_c INT;
+    DECLARE tot DOUBLE;
+	DECLARE coeff DOUBLE;
+    SET id_c = OLD.id_commande; -- nous captons le numéro de commande concerné
+    SET tot = (SELECT sum(prix*quantite) FROM lignedecommande WHERE id_commande=id_c); -- on recalcule le total
+	SET coeff = (SELECT remise from commande where id=id_c)/100 -- on vient chercher la remise
+    SET tot = tot*coeff -- (prévoir le calcul de la remise) 
+    UPDATE commande SET total=tot WHERE id=id_c; -- on stocke le total dans la table commande
+    END;
+|
+DELIMITER ;
