@@ -1,0 +1,29 @@
+CREATE TABLE `ARTICLES_A_COMMANDER` (`codart` char (4) NOT NULL,
+                                   	 `date` date DEFAULT CURRENT_DATE,
+                                     `qte` int(11) DEFAULT NULL,
+                                      KEY `codart` (`codart`),
+                                     CONSTRAINT `ARTICLES_A_COMMANDER_ibfk_1` FOREIGN KEY (`codart`) REFERENCES `produit` (`codart`)
+    );
+
+
+DELIMITER |
+CREATE TRIGGER check_produit AFTER UPDATE ON produit
+    FOR EACH ROW
+    BEGIN
+    DECLARE id_p CHAR(4);
+    DECLARE qteact INT;
+    DECLARE qtecom INT;
+    DECLARE qteale INT;
+    SET qteact = NEW.stkphy;
+    SET qteale = NEW.stkale;
+    SET id_p = NEW.codart; -- nous captons le numéro de produit concerné
+    IF (qteact<=qteale)  
+    THEN SET qtecom= qteale-qteact;
+    	IF ((SELECT count(codart) FROM `ARTICLES_A_COMMANDER` WHERE codart=id_p)>0)
+    	THEN UPDATE `ARTICLES_A_COMMANDER` SET qte=qtecom WHERE codart=id_p;
+    	ELSE INSERT INTO `ARTICLES_A_COMMANDER` (`codart`,`date`,`qte`) values 		 			(id_p,CURRENT_DATE,qtecom);         
+    	END IF;
+    END IF;
+    END
+|
+DELIMITER ;
