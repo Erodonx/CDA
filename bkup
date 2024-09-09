@@ -1,0 +1,7 @@
+"mysql://admin:Afpa1234@127.0.0.1:3306/village_green?serverVersion=mariadb-10.3.34&charset=utf8mb4"
+
+Starting MariaDB 11.5.2-MariaDB-ubu2404
+
+"mysql://admin:Afpa1234@172.20.0.2/village_green?serverVersion=mariadb-11.5.2"
+créer un utilisateur admin mdp Afpa1234 depuis phpmyadmin
+mettre comme adresse 172.20.0.2

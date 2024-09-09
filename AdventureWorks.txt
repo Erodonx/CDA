@@ -1,0 +1,17 @@
+1.
+SELECT FirstName, LastName, JobTitle from Person_Person JOIN
+HumanResources_Employee ON HumanResources_Employee.BusinessEntityID=Person_Person.BusinessEntityID;
+
+2.
+SELECT FirstName, LastName, HumanResources_Department.Name, HumanResources_EmployeeDepartmentHistory.StartDate from Person_Person JOIN
+HumanResources_Employee ON HumanResources_Employee.BusinessEntityID=Person_Person.BusinessEntityID
+JOIN HumanResources_EmployeeDepartmentHistory ON HumanResources_Employee.BusinessEntityID=HumanResources_EmployeeDepartmentHistory.BusinessEntityID
+JOIN HumanResources_Department ON HumanResources_EmployeeDepartmentHistory.DepartmentID=HumanResources_Department.DepartmentID;
+
+3. NA/
+
+4. NA/
+
+5. select FirstName, LastName, Phone from contact;
+
+https://github.com/tapsey/AdventureWorksMYSQL/tree/master
